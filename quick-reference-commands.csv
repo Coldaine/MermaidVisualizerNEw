@@ -1,0 +1,12 @@
+Task,Command,Description
+Build Mermaid (latest),pnpm run build:mermaid,Builds latest stable Mermaid release
+Build Mermaid (specific),node scripts/build-mermaid.js v11.4.0,Builds specific version
+Build Mermaid (bleeding edge),node scripts/build-mermaid.js main,Builds from main branch
+Build extension,pnpm run build:extension,Compiles Chrome extension
+Build desktop,pnpm run build:desktop,Compiles Tauri desktop app
+Build all,pnpm run build:all,Builds Mermaid + both apps
+Dev extension,pnpm run dev:extension,Start extension dev server
+Dev desktop,pnpm run dev:desktop,Start desktop dev server
+Run tests,pnpm test,Execute all test suites
+Clean build,pnpm run clean,Remove all build artifacts
+Install deps,pnpm install,Install all dependencies

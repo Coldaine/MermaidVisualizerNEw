@@ -1,0 +1,23 @@
+classDiagram
+    class MermaidRenderer {
+        +String version
+        +Config config
+        +initialize()
+        +render(code)
+        +reset()
+    }
+
+    class Extension {
+        +scanBlocks()
+        +addOverlays()
+        +handleClick()
+    }
+
+    class DesktopApp {
+        +loadExample()
+        +exportSVG()
+        +exportPNG()
+    }
+
+    MermaidRenderer <|-- Extension
+    MermaidRenderer <|-- DesktopApp

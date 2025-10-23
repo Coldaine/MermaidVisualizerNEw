@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant U as User
+    participant E as Extension
+    participant M as Mermaid
+    participant P as Page
+
+    U->>P: Visit webpage
+    P->>E: Page loaded
+    E->>P: Scan for blocks
+    E->>P: Add overlay buttons
+    U->>E: Click render
+    E->>M: Parse diagram
+    M->>E: Return SVG
+    E->>P: Replace block
+    P->>U: Show diagram

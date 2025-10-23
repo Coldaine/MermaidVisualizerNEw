@@ -1,0 +1,18 @@
+erDiagram
+    EXTENSION ||--o{ CONTENT_SCRIPT : contains
+    DESKTOP_APP ||--o{ COMPONENT : contains
+    CONTENT_SCRIPT ||--|{ MERMAID_BLOCK : detects
+    COMPONENT ||--|{ DIAGRAM : renders
+    MERMAID_BLOCK }|--|| DIAGRAM : transforms
+
+    EXTENSION {
+        string version
+        json manifest
+        array permissions
+    }
+
+    DESKTOP_APP {
+        string version
+        json config
+        array features
+    }

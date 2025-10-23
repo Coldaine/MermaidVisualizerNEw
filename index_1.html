@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid Desktop Editor</title>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --error-color: #dc3545;
+            --editor-bg: #1e1e1e;
+            --editor-text: #d4d4d4;
+            --preview-bg: #ffffff;
+            --toolbar-bg: #f8f9fa;
+            --status-bg: #f5f5f5;
+            --border-color: #dee2e6;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .toolbar {
+            background: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0b5ed7;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5c636a;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: #e9ecef;
+            border: 1px solid var(--border-color);
+            color: #495057;
+        }
+
+        .dropdown-btn:hover:not(:disabled) {
+            background: #dee2e6;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            min-width: 160px;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-pane {
+            width: 40%;
+            background: var(--editor-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-textarea {
+            flex: 1;
+            background: var(--editor-bg);
+            color: var(--editor-text);
+            border: none;
+            padding: 16px;
+            font-family: Monaco, Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .editor-textarea::placeholder {
+            color: #6c757d;
+        }
+
+        .preview-pane {
+            width: 60%;
+            background: var(--preview-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: auto;
+        }
+
+        .preview-content {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--error-color);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--error-color);
+            border-radius: 6px;
+            background: rgba(220, 53, 69, 0.1);
+            margin: 20px;
+        }
+
+        .rendered-svg {
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .status-bar {
+            background: var(--status-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 8px 16px;
+            height: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-success {
+            color: var(--success-color);
+        }
+
+        .status-error {
+            color: var(--error-color);
+        }
+
+        .version-info {
+            font-weight: 500;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .editor-pane,
+            .preview-pane {
+                width: 100%;
+            }
+            
+            .editor-pane {
+                height: 50%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .preview-pane {
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="toolbar">
+            <button id="renderBtn" class="btn btn-primary">
+                ⚡ Render Diagram
+            </button>
+            <button id="clearBtn" class="btn btn-secondary">
+                🗑️ Clear Editor
+            </button>
+            <button id="exportSvgBtn" class="btn btn-secondary" disabled>
+                📄 Export SVG
+            </button>
+            <button id="exportPngBtn" class="btn btn-secondary" disabled>
+                🖼️ Export PNG
+            </button>
+            <div class="dropdown">
+                <button id="examplesBtn" class="btn dropdown-btn">
+                    📚 Load Example ▼
+                </button>
+                <div id="examplesMenu" class="dropdown-menu">
+                    <div class="dropdown-item" data-example="flowchart">Flowchart</div>
+                    <div class="dropdown-item" data-example="sequence">Sequence Diagram</div>
+                    <div class="dropdown-item" data-example="class">Class Diagram</div>
+                    <div class="dropdown-item" data-example="state">State Diagram</div>
+                    <div class="dropdown-item" data-example="er">ER Diagram</div>
+                    <div class="dropdown-item" data-example="gantt">Gantt Chart</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="editor-pane">
+                <textarea id="editorTextarea" class="editor-textarea" 
+                    placeholder="Enter your Mermaid diagram syntax here...
+
+Example:
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Action]
+    B -->|No| D[End]"></textarea>
+            </div>
+            
+            <div class="preview-pane">
+                <div id="previewContent" class="preview-content">
+                    <div class="preview-placeholder">
+                        Click 'Render Diagram' to preview your diagram
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div id="statusMessage" class="status-message">Ready</div>
+            <div class="version-info">Mermaid v11.x | Built from source</div>
+        </div>
+    </div>
+
+    <script type="module">
+        let mermaid = null;
+        let currentSvg = null;
+        
+        const examples = {
+            flowchart: `graph LR
+    A[Square Rect] --> B((Circle))
+    A --> C(Round Rect)
+    B --> D{Rhombus}
+    C --> D`,
+            
+            sequence: `sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    A->>B: Hello Bob!
+    B->>A: Hello Alice!
+    Note right of B: Bob thinks
+    B-->>A: I'm good thanks`,
+            
+            class: `classDiagram
+    class Animal {
+        +String name
+        +int age
+        +makeSound()
+    }
+    class Dog {
+        +String breed
+        +bark()
+    }
+    Animal <|-- Dog`,
+            
+            state: `stateDiagram-v2
+    [*] --> Idle
+    Idle --> Processing: start
+    Processing --> Success: complete
+    Processing --> Error: fail
+    Success --> [*]
+    Error --> Idle: retry`,
+            
+            er: `erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses`,
+            
+            gantt: `gantt
+    title Project Schedule
+    dateFormat YYYY-MM-DD
+    section Phase 1
+    Task 1: 2024-01-01, 30d
+    Task 2: 2024-01-15, 20d
+    section Phase 2
+    Task 3: 2024-02-01, 25d`
+        };
+        
+        const defaultDiagram = `graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+    C --> E[End]`;
+        
+        // DOM elements
+        const editorTextarea = document.getElementById('editorTextarea');
+        const previewContent = document.getElementById('previewContent');
+        const statusMessage = document.getElementById('statusMessage');
+        const renderBtn = document.getElementById('renderBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportSvgBtn = document.getElementById('exportSvgBtn');
+        const exportPngBtn = document.getElementById('exportPngBtn');
+        const examplesBtn = document.getElementById('examplesBtn');
+        const examplesMenu = document.getElementById('examplesMenu');
+        
+        // Initialize app
+        function init() {
+            editorTextarea.value = defaultDiagram;
+            setupEventListeners();
+            loadMermaid();
+        }
+        
+        // Load Mermaid library
+        async function loadMermaid() {
+            try {
+                if (!mermaid) {
+                    const module = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+                    mermaid = module.default;
+                    mermaid.initialize({ 
+                        startOnLoad: false, 
+                        theme: 'default',
+                        securityLevel: 'loose'
+                    });
+                }
+            } catch (error) {
+                showStatus('Failed to load Mermaid library', 'error');
+                console.error('Error loading Mermaid:', error);
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            renderBtn.addEventListener('click', renderDiagram);
+            clearBtn.addEventListener('click', clearEditor);
+            exportSvgBtn.addEventListener('click', exportSVG);
+            exportPngBtn.addEventListener('click', exportPNG);
+            
+            // Examples dropdown
+            examplesBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                examplesMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                examplesMenu.classList.remove('show');
+            });
+            
+            // Example selection
+            examplesMenu.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dropdown-item')) {
+                    const exampleType = e.target.dataset.example;
+                    loadExample(exampleType);
+                    examplesMenu.classList.remove('show');
+                }
+            });
+            
+            // Handle tab key in textarea
+            editorTextarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = editorTextarea.selectionStart;
+                    const end = editorTextarea.selectionEnd;
+                    editorTextarea.value = editorTextarea.value.substring(0, start) + '    ' + editorTextarea.value.substring(end);
+                    editorTextarea.selectionStart = editorTextarea.selectionEnd = start + 4;
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    renderDiagram();
+                }
+            });
+        }
+        
+        // Render diagram
+        async function renderDiagram() {
+            const code = editorTextarea.value.trim();
+            if (!code) {
+                showStatus('Editor is empty', 'error');
+                return;
+            }
+            
+            if (!mermaid) {
+                await loadMermaid();
+                if (!mermaid) return;
+            }
+            
+            showLoading();
+            
+            try {
+                const id = 'mermaid-' + Date.now();
+                const { svg } = await mermaid.render(id, code);
+                
+                previewContent.innerHTML = svg;
+                currentSvg = previewContent.querySelector('svg');
+                
+                if (currentSvg) {
+                    currentSvg.classList.add('rendered-svg');
+                    enableExportButtons();
+                    showStatus('Diagram rendered successfully', 'success');
+                } else {
+                    throw new Error('No SVG generated');
+                }
+                
+            } catch (error) {
+                showError(error.message || 'Failed to render diagram');
+                showStatus('Render failed', 'error');
+            }
+        }
+        
+        // Show loading state
+        function showLoading() {
+            previewContent.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <span>Rendering diagram...</span>
+                </div>
+            `;
+        }
+        
+        // Show error
+        function showError(message) {
+            previewContent.innerHTML = `
+                <div class="error-message">
+                    <strong>❌ Render Error</strong><br>
+                    ${message}
+                </div>
+            `;
+            disableExportButtons();
+        }
+        
+        // Clear editor
+        function clearEditor() {
+            editorTextarea.value = '';
+            previewContent.innerHTML = '<div class="preview-placeholder">Click \'Render Diagram\' to preview your diagram</div>';
+            currentSvg = null;
+            disableExportButtons();
+            showStatus('Editor cleared', 'success');
+        }
+        
+        // Load example
+        function loadExample(type) {
+            if (examples[type]) {
+                editorTextarea.value = examples[type];
+                showStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} example loaded`, 'success');
+            }
+        }
+        
+        // Export SVG
+        function exportSVG() {
+            if (!currentSvg) return;
+            
+            try {
+                const svgData = new XMLSerializer().serializeToString(currentSvg);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                const filename = `mermaid-diagram-${timestamp}.svg`;
+                
+                downloadFile(svgBlob, filename);
+                showStatus('SVG exported successfully', 'success');
+            } catch (error) {
+                showStatus('Failed to export SVG', 'error');
+            }
+        }
+        
+        // Export PNG
+        function exportPNG() {
+            if (!currentSvg) return;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const svgRect = currentSvg.getBoundingClientRect();
+                const svgWidth = currentSvg.viewBox?.baseVal?.width || svgRect.width || 800;
+                const svgHeight = currentSvg.viewBox?.baseVal?.height || svgRect.height || 600;
+                
+                // High DPI export
+                const scale = 2;
+                canvas.width = svgWidth * scale;
+                canvas.height = svgHeight * scale;
+                ctx.scale(scale, scale);
+                
+                const svgData = new XMLSerializer().serializeToString(currentSvg);
+                const img = new Image();
+                
+                img.onload = function() {
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, svgWidth, svgHeight);
+                    ctx.drawImage(img, 0, 0);
+                    
+                    canvas.toBlob(function(blob) {
+                        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                        const filename = `mermaid-diagram-${timestamp}.png`;
+                        downloadFile(blob, filename);
+                        showStatus('PNG exported successfully', 'success');
+                    }, 'image/png');
+                };
+                
+                img.onerror = function() {
+                    showStatus('Failed to export PNG', 'error');
+                };
+                
+                const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                img.src = svgUrl;
+                
+            } catch (error) {
+                showStatus('Failed to export PNG', 'error');
+                console.error('PNG export error:', error);
+            }
+        }
+        
+        // Download file
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Enable export buttons
+        function enableExportButtons() {
+            exportSvgBtn.disabled = false;
+            exportPngBtn.disabled = false;
+        }
+        
+        // Disable export buttons
+        function disableExportButtons() {
+            exportSvgBtn.disabled = true;
+            exportPngBtn.disabled = true;
+        }
+        
+        // Show status message
+        function showStatus(message, type = '') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type ? 'status-' + type : ''}`;
+            
+            if (type) {
+                setTimeout(() => {
+                    statusMessage.textContent = 'Ready';
+                    statusMessage.className = 'status-message';
+                }, 3000);
+            }
+        }
+        
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>

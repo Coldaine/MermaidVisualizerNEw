@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Uninitialized
+    Uninitialized --> Initialized: initialize()
+    Initialized --> Rendering: render()
+    Rendering --> Success: valid syntax
+    Rendering --> Error: invalid syntax
+    Success --> [*]
+    Error --> Initialized: reset()
