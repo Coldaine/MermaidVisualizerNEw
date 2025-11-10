@@ -1,17 +1,46 @@
 {
-  "name": "mermaid-tooling-monorepo",
+  "name": "mermaid-visualizer",
   "version": "1.0.0",
   "private": true,
-  "description": "Monorepo for Mermaid rendering tools: Chrome extension and desktop app",
+  "type": "module",
+  "description": "Comprehensive toolkit for rendering Mermaid diagrams with Chrome extension and desktop app support",
+  "keywords": [
+    "mermaid",
+    "diagrams",
+    "visualizer",
+    "flowchart",
+    "chrome-extension",
+    "desktop-app",
+    "architecture-diagram",
+    "beta-diagrams"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/MermaidVisualizerNEw.git"
+  },
   "scripts": {
-    "build:mermaid": "node scripts/build-mermaid.js",
-    "build:extension": "pnpm --filter @mermaid-tools/extension build",
-    "build:desktop": "pnpm --filter @mermaid-tools/desktop build",
+    "build:mermaid": "node build-mermaid.js",
+    "build:extension": "echo 'Extension build not yet implemented'",
+    "build:desktop": "echo 'Desktop build not yet implemented'",
     "build:all": "pnpm run build:mermaid && pnpm run build:extension && pnpm run build:desktop",
-    "dev:extension": "pnpm --filter @mermaid-tools/extension dev",
-    "dev:desktop": "pnpm --filter @mermaid-tools/desktop dev",
-    "test": "pnpm --recursive test",
-    "clean": "pnpm --recursive clean && rm -rf node_modules"
+    "dev:extension": "echo 'Opening extension demo...' && start index.html",
+    "dev:desktop": "echo 'Opening desktop app...' && start index_1.html",
+    "dev:styled": "echo 'Opening enhanced styled desktop app...' && start index_styled.html",
+    "test": "node tests/diagram-validator.js",
+    "test:verbose": "node tests/diagram-validator.js --verbose",
+    "test:beta": "node tests/beta-features.test.js",
+    "test:type": "node tests/diagram-validator.js --type",
+    "test:browser": "echo 'Opening browser test runner...' && start tests/browser-test-runner.html",
+    "test:all": "pnpm run test && pnpm run test:beta",
+    "test:diagrams": "pnpm run test:all",
+    "validate": "pnpm run test:all",
+    "lint": "echo 'Linting not yet configured'",
+    "format": "echo 'Formatting not yet configured'",
+    "clean": "echo 'Cleaning build artifacts...' && rimraf dist node_modules/.cache",
+    "serve": "echo 'Starting local server...' && npx http-server -p 8080",
+    "docs": "echo 'Opening documentation...' && start README.md"
   },
   "workspaces": [
     "packages/*",
@@ -22,8 +51,13 @@
     "typescript": "^5.3.0",
     "vite": "^5.0.0"
   },
+  "optionalDependencies": {
+    "http-server": "^14.1.1",
+    "rimraf": "^5.0.5"
+  },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
-  }
+  },
+  "packageManager": "pnpm@8.15.0"
 }

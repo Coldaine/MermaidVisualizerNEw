@@ -305,6 +305,13 @@
                     <div class="dropdown-item" data-example="state">State Diagram</div>
                     <div class="dropdown-item" data-example="er">ER Diagram</div>
                     <div class="dropdown-item" data-example="gantt">Gantt Chart</div>
+                    <div class="dropdown-item" style="border-top: 2px solid #dee2e6; margin-top: 4px; padding-top: 8px; font-weight: 600; color: #0066cc;" data-example="">Beta Diagrams</div>
+                    <div class="dropdown-item" data-example="architecture">⚡ Architecture Diagram</div>
+                    <div class="dropdown-item" data-example="block">⚡ Block Diagram</div>
+                    <div class="dropdown-item" data-example="mindmap">⚡ Mindmap</div>
+                    <div class="dropdown-item" data-example="xychart">⚡ XY Chart</div>
+                    <div class="dropdown-item" data-example="sankey">⚡ Sankey Diagram</div>
+                    <div class="dropdown-item" data-example="quadrant">⚡ Quadrant Chart</div>
                 </div>
             </div>
         </div>
@@ -346,7 +353,7 @@ graph TD
     A --> C(Round Rect)
     B --> D{Rhombus}
     C --> D`,
-            
+
             sequence: `sequenceDiagram
     participant A as Alice
     participant B as Bob
@@ -354,7 +361,7 @@ graph TD
     B->>A: Hello Alice!
     Note right of B: Bob thinks
     B-->>A: I'm good thanks`,
-            
+
             class: `classDiagram
     class Animal {
         +String name
@@ -366,7 +373,7 @@ graph TD
         +bark()
     }
     Animal <|-- Dog`,
-            
+
             state: `stateDiagram-v2
     [*] --> Idle
     Idle --> Processing: start
@@ -374,12 +381,12 @@ graph TD
     Processing --> Error: fail
     Success --> [*]
     Error --> Idle: retry`,
-            
+
             er: `erDiagram
     CUSTOMER ||--o{ ORDER : places
     ORDER ||--|{ LINE-ITEM : contains
     CUSTOMER }|..|{ DELIVERY-ADDRESS : uses`,
-            
+
             gantt: `gantt
     title Project Schedule
     dateFormat YYYY-MM-DD
@@ -387,7 +394,109 @@ graph TD
     Task 1: 2024-01-01, 30d
     Task 2: 2024-01-15, 20d
     section Phase 2
-    Task 3: 2024-02-01, 25d`
+    Task 3: 2024-02-01, 25d`,
+
+            // Beta/Experimental Diagrams
+            architecture: `architecture-beta
+    group cloud(cloud)[Cloud Infrastructure]
+
+    service web(server)[Web Server] in cloud
+    service api(server)[API Server] in cloud
+    service db(database)[Database] in cloud
+    service cache(disk)[Cache] in cloud
+
+    web:R --> L:api
+    api:R --> L:db
+    api:B --> T:cache`,
+
+            block: `block-beta
+    columns 3
+
+    Frontend["Frontend Layer"]
+    space
+    Backend["Backend Layer"]
+
+    block:ui:2
+        WebApp["Web App"]
+        Mobile["Mobile App"]
+    end
+
+    block:api:1
+        REST["REST API"]
+        GraphQL["GraphQL"]
+    end
+
+    Database["Database"]
+    Cache["Cache"]
+    Queue["Queue"]
+
+    WebApp --> REST
+    Mobile --> GraphQL
+    REST --> Database
+    GraphQL --> Database`,
+
+            mindmap: `mindmap
+  root((Mermaid Visualizer))
+    Features
+      Desktop App
+        Live Editor
+        Export SVG/PNG
+        Templates
+      Chrome Extension
+        Auto Detection
+        Overlay Buttons
+    Diagram Types
+      Stable
+        Flowchart
+        Sequence
+        Class
+      Beta
+        Architecture
+        Block
+        XY Chart
+    Technology
+      Frontend
+        HTML/CSS/JS
+      Libraries
+        Mermaid.js v11+`,
+
+            xychart: `xychart-beta
+    title "Monthly Sales 2024"
+    x-axis [Jan, Feb, Mar, Apr, May, Jun]
+    y-axis "Revenue ($K)" 0 --> 100
+    bar [45, 52, 48, 61, 58, 65]
+    line [40, 45, 50, 55, 60, 65]`,
+
+            sankey: `%%{init: {"theme": "default"}}%%
+sankey-beta
+
+Organic,Homepage,5000
+Social,Homepage,3000
+Direct,Homepage,2000
+
+Homepage,Products,4000
+Homepage,Blog,3500
+Homepage,About,2500
+
+Products,Purchase,2500
+Products,Abandoned,1500
+Blog,Newsletter,2000
+Blog,Exit,1500`,
+
+            quadrant: `quadrantChart
+    title Feature Priority Matrix
+    x-axis Low Effort --> High Effort
+    y-axis Low Impact --> High Impact
+    quadrant-1 Quick Wins
+    quadrant-2 Big Bets
+    quadrant-3 Fill Ins
+    quadrant-4 Time Sinks
+
+    Feature A: [0.3, 0.8]
+    Feature B: [0.7, 0.7]
+    Feature C: [0.2, 0.3]
+    Feature D: [0.8, 0.4]
+    Feature E: [0.5, 0.6]`
         };
         
         const defaultDiagram = `graph TD
@@ -455,8 +564,10 @@ graph TD
             examplesMenu.addEventListener('click', (e) => {
                 if (e.target.classList.contains('dropdown-item')) {
                     const exampleType = e.target.dataset.example;
-                    loadExample(exampleType);
-                    examplesMenu.classList.remove('show');
+                    if (exampleType) {  // Skip header items without example type
+                        loadExample(exampleType);
+                        examplesMenu.classList.remove('show');
+                    }
                 }
             });
             

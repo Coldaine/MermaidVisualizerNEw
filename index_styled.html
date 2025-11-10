@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid Visualizer - Enhanced Edition</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --success-color: #48bb78;
+            --error-color: #f56565;
+            --editor-bg: #1a202c;
+            --editor-text: #e2e8f0;
+            --preview-bg: #ffffff;
+            --toolbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --status-bg: #f7fafc;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f7fafc;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .toolbar {
+            background: var(--toolbar-bg);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            flex-wrap: wrap;
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: rgba(255,255,255,0.95);
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        select option {
+            background: #2d3748;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-pane {
+            width: 40%;
+            background: var(--editor-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            background: #2d3748;
+            padding: 10px 16px;
+            color: #e2e8f0;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .editor-textarea {
+            flex: 1;
+            background: var(--editor-bg);
+            color: var(--editor-text);
+            border: none;
+            padding: 16px;
+            font-family: 'Fira Code', Monaco, Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .editor-textarea::placeholder {
+            color: #718096;
+        }
+
+        .preview-pane {
+            width: 60%;
+            background: var(--preview-bg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: #edf2f7;
+            padding: 10px 16px;
+            color: #2d3748;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: auto;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #a0aec0;
+            font-size: 16px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-color);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--error-color);
+            padding: 20px;
+            text-align: left;
+            border: 2px solid var(--error-color);
+            border-radius: 8px;
+            background: rgba(245, 101, 101, 0.1);
+            margin: 20px;
+            max-width: 600px;
+        }
+
+        .error-message h3 {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message pre {
+            background: rgba(0,0,0,0.05);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .rendered-svg {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: white;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .rendered-svg:hover {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .status-bar {
+            background: var(--status-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 8px 20px;
+            height: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            color: var(--success-color);
+        }
+
+        .status-error {
+            color: var(--error-color);
+        }
+
+        .version-info {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-beta {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .toolbar {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .editor-pane,
+            .preview-pane {
+                width: 100%;
+            }
+
+            .editor-pane {
+                height: 50%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .preview-pane {
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <button id="renderBtn" class="btn btn-primary">
+                    ⚡ Render
+                </button>
+                <button id="clearBtn" class="btn btn-secondary">
+                    🗑️ Clear
+                </button>
+            </div>
+
+            <div class="toolbar-divider"></div>
+
+            <div class="toolbar-section">
+                <select id="themeSelect">
+                    <option value="default">🎨 Default Theme</option>
+                    <option value="dark">🌙 Dark Theme</option>
+                    <option value="forest">🌲 Forest Theme</option>
+                    <option value="neutral">📄 Neutral Theme</option>
+                    <option value="base">🎭 Custom Base</option>
+                </select>
+            </div>
+
+            <div class="toolbar-divider"></div>
+
+            <div class="toolbar-section">
+                <select id="exampleSelect">
+                    <option value="">📚 Load Example...</option>
+                    <optgroup label="✨ Styled Examples">
+                        <option value="styled-flow">🚀 Project Workflow</option>
+                        <option value="styled-sequence">💳 Checkout Flow</option>
+                        <option value="styled-class">⚙️ Microservices</option>
+                        <option value="styled-state">📦 Order States</option>
+                        <option value="styled-arch">☁️ Cloud Infrastructure</option>
+                        <option value="styled-gantt">📅 Product Launch</option>
+                    </optgroup>
+                    <optgroup label="📄 Basic Examples">
+                        <option value="flowchart">Flowchart</option>
+                        <option value="sequence">Sequence Diagram</option>
+                        <option value="class">Class Diagram</option>
+                        <option value="state">State Diagram</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="toolbar-divider"></div>
+
+            <div class="toolbar-section">
+                <button id="exportSvgBtn" class="btn btn-secondary" disabled>
+                    📄 SVG
+                </button>
+                <button id="exportPngBtn" class="btn btn-secondary" disabled>
+                    🖼️ PNG
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-pane">
+                <div class="editor-header">
+                    💻 Mermaid Code Editor
+                </div>
+                <textarea id="editorTextarea" class="editor-textarea"
+                    placeholder="Enter your Mermaid diagram syntax here...
+
+Example:
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ff6b6b'}}}%%
+graph TD
+    A[Start] --> B[Process]
+    B --> C{Decision}
+    C -->|Yes| D[Success]
+    C -->|No| E[Retry]"></textarea>
+            </div>
+
+            <div class="preview-pane">
+                <div class="preview-header">
+                    🎨 Live Preview
+                </div>
+                <div id="previewContent" class="preview-content">
+                    <div class="preview-placeholder">
+                        Click 'Render' or press Ctrl+Enter to preview your diagram
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div id="statusMessage" class="status-message">Ready</div>
+            <div class="version-info">✨ Mermaid Visualizer Enhanced | Mermaid v11.x</div>
+        </div>
+    </div>
+
+    <script type="module">
+        let mermaid = null;
+        let currentSvg = null;
+        let currentTheme = 'default';
+
+        const styledExamples = {
+            'styled-flow': `%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#ff6b6b','primaryTextColor':'#fff','primaryBorderColor':'#c92a2a','lineColor':'#495057','secondaryColor':'#4ecdc4','tertiaryColor':'#ffe66d','fontSize':'16px'}}}%%
+graph TB
+    Start([🚀 Start Project]) --> Planning[📋 Planning Phase]
+    Planning --> Design[🎨 Design]
+    Planning --> Research[🔬 Research]
+
+    Design --> Review1{👥 Design Review}
+    Research --> Review1
+
+    Review1 -->|Approved ✅| Development[💻 Development]
+    Review1 -->|Revisions Needed ⚠️| Planning
+
+    Development --> Testing[🧪 Testing]
+    Testing --> Review2{🔍 QA Review}
+
+    Review2 -->|Pass ✅| Deploy[🚀 Deploy]
+    Review2 -->|Fail ❌| Development
+
+    Deploy --> Monitor[📊 Monitor]
+    Monitor --> End([✨ Success!])
+
+    style Start fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style End fill:#51cf66,stroke:#2f9e44,stroke-width:3px,color:#fff
+    style Deploy fill:#4ecdc4,stroke:#22b8cf,stroke-width:3px
+    style Testing fill:#ffe66d,stroke:#ffd43b
+    style Development fill:#a78bfa,stroke:#7c3aed,color:#fff`,
+
+            'styled-sequence': `%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#667eea','secondaryColor':'#764ba2','tertiaryColor':'#f093fb','primaryTextColor':'#fff','lineColor':'#667eea','fontSize':'14px'}}}%%
+sequenceDiagram
+    autonumber
+    actor Customer as 👤 Customer
+    participant UI as 🖥️ Web App
+    participant API as ⚙️ API Server
+    participant Payment as 💳 Payment Gateway
+    participant DB as 🗄️ Database
+
+    Customer->>+UI: Add items to cart
+    UI->>+API: GET /cart
+    API->>+DB: Fetch cart
+    DB-->>-API: Cart items
+    API-->>-UI: Cart data
+
+    Customer->>+UI: Checkout
+    UI->>+Payment: Process payment
+
+    alt Payment Successful
+        Payment-->>API: Success ✅
+        API->>DB: Create order
+        DB-->>API: Order #12345
+        API-->>UI: Confirmed
+        UI-->>Customer: Thank you! 🎉
+    else Payment Failed
+        Payment-->>API: Failed ❌
+        API-->>UI: Error
+        UI-->>Customer: Please retry
+    end
+
+    deactivate API`,
+
+            'styled-class': `%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#4f46e5','secondaryColor':'#7c3aed','tertiaryColor':'#ec4899','primaryTextColor':'#fff','fontSize':'13px'}}}%%
+classDiagram
+    class ApiGateway {
+        <<service>>
+        +routeRequest()
+        +authenticate()
+        +loadBalance()
+    }
+
+    class UserService {
+        <<microservice>>
+        +createUser()
+        +getUserById()
+        -validateEmail()
+        -hashPassword()
+    }
+
+    class OrderService {
+        <<microservice>>
+        +createOrder()
+        +updateStatus()
+        -calculateTotal()
+    }
+
+    class PaymentService {
+        <<microservice>>
+        +processPayment()
+        +refundPayment()
+        -encryptCardData()
+    }
+
+    ApiGateway --> UserService
+    ApiGateway --> OrderService
+    ApiGateway --> PaymentService
+    OrderService ..> PaymentService : calls`,
+
+            'styled-state': `%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#14b8a6','secondaryColor':'#8b5cf6','tertiaryColor':'#f59e0b','noteBkgColor':'#fef3c7','fontSize':'14px'}}}%%
+stateDiagram-v2
+    [*] --> Pending : Order Created 📝
+
+    Pending --> Processing : Payment ✅
+    Pending --> Cancelled : Cancelled ❌
+
+    Processing --> Shipped : Packed 📦
+    Processing --> Cancelled : Failed ❌
+
+    Shipped --> Delivered : Delivered ✅
+    Delivered --> Completed : Confirmed ✨
+
+    Completed --> [*]
+    Cancelled --> [*]`,
+
+            'styled-arch': `architecture-beta
+    group internet(cloud)[Internet 🌐]
+    group app(server)[Application 💻]
+    group data(database)[Data Layer 💾]
+
+    service cdn(internet)[CDN] in internet
+    service lb(server)[Load Balancer] in app
+    service web(server)[Web Server] in app
+    service api(server)[API Server] in app
+    service cache(disk)[Cache] in app
+    service db(database)[Database] in data
+    service backup(disk)[Backup] in data
+
+    cdn:B --> T:lb
+    lb:B --> T:web
+    web:R --> L:api
+    api:B --> T:cache
+    api:B --> T:db
+    db:R --> L:backup`,
+
+            'styled-gantt': `%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#8b5cf6','secondaryColor':'#ec4899','fontSize':'13px'}}}%%
+gantt
+    title 🚀 Product Launch Timeline
+    dateFormat YYYY-MM-DD
+
+    section Planning 📋
+    Research       :done, r1, 2025-01-01, 15d
+    Requirements   :active, r2, 2025-01-15, 17d
+
+    section Design 🎨
+    UX Design      :d1, 2025-01-20, 21d
+    UI Design      :d2, 2025-02-01, 20d
+
+    section Development 💻
+    Backend        :dev1, 2025-02-05, 38d
+    Frontend       :dev2, 2025-02-15, 38d
+
+    section Launch 🎉
+    Beta Release   :crit, l1, 2025-04-05, 10d
+    Production     :crit, l2, 2025-04-15, 5d`
+        };
+
+        const basicExamples = {
+            flowchart: `graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Action]
+    B -->|No| D[End]`,
+
+            sequence: `sequenceDiagram
+    Alice->>Bob: Hello!
+    Bob-->>Alice: Hi!`,
+
+            class: `classDiagram
+    Animal <|-- Dog
+    Animal : +makeSound()
+    Dog : +bark()`,
+
+            state: `stateDiagram-v2
+    [*] --> Idle
+    Idle --> Active
+    Active --> [*]`
+        };
+
+        const examples = { ...styledExamples, ...basicExamples };
+
+        // DOM elements
+        const editorTextarea = document.getElementById('editorTextarea');
+        const previewContent = document.getElementById('previewContent');
+        const statusMessage = document.getElementById('statusMessage');
+        const renderBtn = document.getElementById('renderBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportSvgBtn = document.getElementById('exportSvgBtn');
+        const exportPngBtn = document.getElementById('exportPngBtn');
+        const themeSelect = document.getElementById('themeSelect');
+        const exampleSelect = document.getElementById('exampleSelect');
+
+        // Initialize
+        function init() {
+            editorTextarea.value = styledExamples['styled-flow'];
+            setupEventListeners();
+            loadMermaid();
+        }
+
+        // Load Mermaid library
+        async function loadMermaid() {
+            try {
+                if (!mermaid) {
+                    const module = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+                    mermaid = module.default;
+                    updateMermaidTheme();
+                }
+            } catch (error) {
+                showStatus('Failed to load Mermaid library', 'error');
+                console.error('Error loading Mermaid:', error);
+            }
+        }
+
+        // Update Mermaid theme
+        function updateMermaidTheme() {
+            if (!mermaid) return;
+
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: currentTheme,
+                securityLevel: 'loose',
+                logLevel: 'error',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            renderBtn.addEventListener('click', renderDiagram);
+            clearBtn.addEventListener('click', clearEditor);
+            exportSvgBtn.addEventListener('click', exportSVG);
+            exportPngBtn.addEventListener('click', exportPNG);
+
+            themeSelect.addEventListener('change', (e) => {
+                currentTheme = e.target.value;
+                updateMermaidTheme();
+                showStatus(`Theme changed to ${currentTheme}`, 'success');
+            });
+
+            exampleSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    loadExample(e.target.value);
+                    e.target.value = '';
+                }
+            });
+
+            editorTextarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = editorTextarea.selectionStart;
+                    const end = editorTextarea.selectionEnd;
+                    editorTextarea.value = editorTextarea.value.substring(0, start) + '    ' + editorTextarea.value.substring(end);
+                    editorTextarea.selectionStart = editorTextarea.selectionEnd = start + 4;
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    renderDiagram();
+                }
+            });
+        }
+
+        // Render diagram
+        async function renderDiagram() {
+            const code = editorTextarea.value.trim();
+            if (!code) {
+                showStatus('Editor is empty', 'error');
+                return;
+            }
+
+            if (!mermaid) {
+                await loadMermaid();
+                if (!mermaid) return;
+            }
+
+            showLoading();
+
+            try {
+                const id = 'mermaid-' + Date.now();
+                const { svg } = await mermaid.render(id, code);
+
+                previewContent.innerHTML = `<div class="rendered-svg">${svg}</div>`;
+                currentSvg = previewContent.querySelector('svg');
+
+                if (currentSvg) {
+                    enableExportButtons();
+                    showStatus('✨ Diagram rendered successfully!', 'success');
+                } else {
+                    throw new Error('No SVG generated');
+                }
+
+            } catch (error) {
+                showError(error.message || 'Failed to render diagram');
+                showStatus('Render failed', 'error');
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            previewContent.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <div>Rendering your beautiful diagram...</div>
+                </div>
+            `;
+        }
+
+        // Show error
+        function showError(message) {
+            previewContent.innerHTML = `
+                <div class="error-message">
+                    <h3>❌ Render Error</h3>
+                    <pre>${message}</pre>
+                </div>
+            `;
+            disableExportButtons();
+        }
+
+        // Clear editor
+        function clearEditor() {
+            editorTextarea.value = '';
+            previewContent.innerHTML = '<div class="preview-placeholder">Click \'Render\' to preview your diagram</div>';
+            currentSvg = null;
+            disableExportButtons();
+            showStatus('Editor cleared', 'success');
+        }
+
+        // Load example
+        function loadExample(type) {
+            if (examples[type]) {
+                editorTextarea.value = examples[type];
+                showStatus(`📚 ${type} example loaded`, 'success');
+            }
+        }
+
+        // Export SVG
+        function exportSVG() {
+            if (!currentSvg) return;
+
+            try {
+                const svgData = new XMLSerializer().serializeToString(currentSvg);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                const filename = `mermaid-diagram-${timestamp}.svg`;
+
+                downloadFile(svgBlob, filename);
+                showStatus('✅ SVG exported successfully!', 'success');
+            } catch (error) {
+                showStatus('Failed to export SVG', 'error');
+            }
+        }
+
+        // Export PNG
+        function exportPNG() {
+            if (!currentSvg) return;
+
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                const svgRect = currentSvg.getBoundingClientRect();
+                const svgWidth = currentSvg.viewBox?.baseVal?.width || svgRect.width || 800;
+                const svgHeight = currentSvg.viewBox?.baseVal?.height || svgRect.height || 600;
+
+                const scale = 2;
+                canvas.width = svgWidth * scale;
+                canvas.height = svgHeight * scale;
+                ctx.scale(scale, scale);
+
+                const svgData = new XMLSerializer().serializeToString(currentSvg);
+                const img = new Image();
+
+                img.onload = function() {
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, svgWidth, svgHeight);
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob(function(blob) {
+                        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                        const filename = `mermaid-diagram-${timestamp}.png`;
+                        downloadFile(blob, filename);
+                        showStatus('✅ PNG exported successfully!', 'success');
+                    }, 'image/png');
+                };
+
+                img.onerror = function() {
+                    showStatus('Failed to export PNG', 'error');
+                };
+
+                const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                img.src = svgUrl;
+
+            } catch (error) {
+                showStatus('Failed to export PNG', 'error');
+                console.error('PNG export error:', error);
+            }
+        }
+
+        // Download file
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Enable export buttons
+        function enableExportButtons() {
+            exportSvgBtn.disabled = false;
+            exportPngBtn.disabled = false;
+        }
+
+        // Disable export buttons
+        function disableExportButtons() {
+            exportSvgBtn.disabled = true;
+            exportPngBtn.disabled = true;
+        }
+
+        // Show status message
+        function showStatus(message, type = '') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type ? 'status-' + type : ''}`;
+
+            if (type) {
+                setTimeout(() => {
+                    statusMessage.textContent = 'Ready';
+                    statusMessage.className = 'status-message';
+                }, 3000);
+            }
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>

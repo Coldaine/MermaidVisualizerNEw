@@ -1,0 +1,32 @@
+%%{init: {"theme": "default"}}%%
+graph LR
+    subgraph Backlog
+        B1[User Authentication]
+        B2[Dashboard Design]
+        B3[API Integration]
+    end
+
+    subgraph "In Progress"
+        P1[Database Schema]
+        P2[Frontend Components]
+    end
+
+    subgraph Review
+        R1[Payment Gateway]
+    end
+
+    subgraph Done
+        D1[Project Setup]
+        D2[CI/CD Pipeline]
+        D3[Documentation]
+    end
+
+    B1 -.-> P1
+    B2 -.-> P2
+    P1 -.-> R1
+    R1 -.-> D1
+
+    style Backlog fill:#f9f9f9
+    style "In Progress" fill:#fff3cd
+    style Review fill:#cfe2ff
+    style Done fill:#d1e7dd

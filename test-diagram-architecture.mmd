@@ -1,0 +1,21 @@
+architecture-beta
+    group cloud(cloud)[Cloud Infrastructure]
+    group api_layer(server)[API Layer] in cloud
+    group data_layer(database)[Data Layer] in cloud
+
+    service web(server)[Web Server] in api_layer
+    service auth(server)[Auth Service] in api_layer
+    service cache(disk)[Redis Cache] in api_layer
+
+    service postgres(database)[PostgreSQL] in data_layer
+    service mongo(database)[MongoDB] in data_layer
+    service s3(disk)[S3 Storage] in data_layer
+
+    service external(internet)[External API]
+
+    web:R --> L:auth
+    web:B --> T:cache
+    auth:R --> L:postgres
+    web:B --> T:mongo
+    web:R --> L:s3
+    external:B --> T:web

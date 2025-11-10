@@ -1,0 +1,31 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    Root["Project Budget: $1,000,000"]
+
+    Dev["Development: $600,000"]
+    Ops["Operations: $250,000"]
+    Marketing["Marketing: $150,000"]
+
+    Frontend["Frontend: $250,000"]
+    Backend["Backend: $200,000"]
+    Mobile["Mobile: $150,000"]
+
+    Infrastructure["Infrastructure: $150,000"]
+    Support["Support: $100,000"]
+
+    Digital["Digital: $100,000"]
+    Traditional["Traditional: $50,000"]
+
+    Root --> Dev
+    Root --> Ops
+    Root --> Marketing
+
+    Dev --> Frontend
+    Dev --> Backend
+    Dev --> Mobile
+
+    Ops --> Infrastructure
+    Ops --> Support
+
+    Marketing --> Digital
+    Marketing --> Traditional

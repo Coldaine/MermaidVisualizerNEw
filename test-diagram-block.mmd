@@ -1,0 +1,32 @@
+block-beta
+    columns 3
+
+    block:header["System Architecture"]:3
+
+    Frontend["Frontend Layer"]
+    space
+    Backend["Backend Layer"]
+
+    block:ui:2
+        columns 2
+        WebApp["Web App"]
+        Mobile["Mobile App"]
+    end
+
+    block:services:1
+        columns 1
+        API["REST API"]
+        GraphQL["GraphQL API"]
+        WebSocket["WebSocket"]
+    end
+
+    Database["Database"]
+    Cache["Cache"]
+    Queue["Message Queue"]
+
+    WebApp --> API
+    Mobile --> GraphQL
+    API --> Database
+    GraphQL --> Database
+    API --> Cache
+    WebSocket --> Queue
