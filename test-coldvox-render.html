@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColdVox Knowledge Graph Test</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .stats ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 ColdVox Knowledge Graph - Rendering Test</h1>
+
+        <div class="info">
+            <p><strong>Graph Characteristics:</strong></p>
+            <ul>
+                <li><strong>Type:</strong> Flowchart LR (Left-to-Right)</li>
+                <li><strong>Nodes:</strong> ~30+ nodes</li>
+                <li><strong>Subgraphs:</strong> 7 major sections</li>
+                <li><strong>Edge Types:</strong> Solid (hierarchy), Dashed (agent interactions), Plain (semantic ties)</li>
+                <li><strong>Features:</strong> HTML labels with bold text and line breaks</li>
+            </ul>
+        </div>
+
+        <div class="mermaid">
+flowchart LR
+  %% ORIENTATION
+  %% Left -> Right for hierarchy. Agents interact via dashed advisory edges.
+
+  %% ===== HIERARCHY =====
+  subgraph L0_Vision["L0 • Vision"]
+    VIS["**Vision: ColdVox Unified Knowledge Strategy**<br/>Purpose: a living, searchable graph of design → code → tests.<br/>Outcomes: clarity, fast onboarding, precise impact analysis."]
+  end
+
+  subgraph L1_Pillars["L1 • Pillars"]
+    PIL_Product["**Pillar: Product Experience & Growth**<br/>Focus: user workflows, coherence, discoverability.<br/>KPIs: task success rate, time-to-info."]
+    PIL_Platform["**Pillar: Platform & Reliability**<br/>Focus: developer velocity, CI stability, operability.<br/>KPIs: MTTR, build time, flaky-test rate."]
+  end
+
+  subgraph L2_Domains["L2 • Domains"]
+    DOM_Auth["**Domain: Authentication & Access Control**<br/>Scope: SSO, OAuth 2.1, OIDC, MFA, sessions."]
+    DOM_Docs["**Domain: Documentation Graph & Search**<br/>Scope: schema, indexing, search, navigation."]
+  end
+
+  subgraph L3_Specs["L3 • Specs"]
+    SPEC_OAuth["**Spec: OAuth 2.1 API**<br/>Interfaces: `/authorize`, `/token`.<br/>Decisions: PKCE required, confidential clients only.<br/>Risks: token leakage, CSRF."]
+    SPEC_Session["**Spec: Session Token Model**<br/>Format: JWT w/ rotation & audience claims.<br/>Constraints: 15m access, 24h refresh.<br/>Risks: clock skew, replay."]
+    SPEC_Graph["**Spec: Docs-as-Graph Lite Schema**<br/>Nodes: pillar, domain, spec, impl, test, note.<br/>Edges: parent, implements, verified_by, depends_on, links."]
+  end
+
+  subgraph Impl["Implementations"]
+    IMP_Auth["**Impl: auth-service module**<br/>Lang: Rust.<br/>Code: `CODE:repo://src/auth.rs#symbol=login_handler`"]
+    IMP_Indexer["**Impl: graph-indexer**<br/>Lang: TypeScript.<br/>Code: `CODE:repo://tools/indexer.ts#L10-L220`"]
+  end
+
+  subgraph Tests["Tests"]
+    TST_OAuth["**Test: OAuth Flow E2E**<br/>Covers: auth code, token exchange, refresh, revocation."]
+    TST_Graph["**Test: Graph Builder Unit Suite**<br/>Covers: node parse, edge resolve, backlink emit."]
+  end
+
+  subgraph Notes["Freeform Notes"]
+    NOTE_SSO["**Note: SSO findings and vendor evaluation**<br/>Decision: OIDC, priority Okta; fallback Auth0.<br/>Open: SCIM provisioning scope."]
+  end
+
+  %% ===== HIERARCHY EDGES (parent) =====
+  VIS -->|parent| PIL_Product
+  VIS -->|parent| PIL_Platform
+  PIL_Product -->|parent| DOM_Auth
+  PIL_Platform -->|parent| DOM_Docs
+  DOM_Auth -->|parent| SPEC_OAuth
+  DOM_Auth -->|parent| SPEC_Session
+  DOM_Docs -->|parent| SPEC_Graph
+
+  %% ===== GRAPH EDGES (semantic ties) =====
+  SPEC_OAuth -->|implements| IMP_Auth
+  SPEC_Graph -->|implements| IMP_Indexer
+  SPEC_OAuth -->|verified_by| TST_OAuth
+  SPEC_Graph -->|verified_by| TST_Graph
+  SPEC_Session ---|depends_on| SPEC_OAuth
+  NOTE_SSO ---|links| SPEC_OAuth
+  NOTE_SSO ---|links| SPEC_Session
+
+  %% ===== AGENTS =====
+  subgraph Agents["Agents (assist, propose, open PRs)"]
+    AG_AutoParent["**Agent: Auto-Parent**<br/>Input: new spec/note.<br/>Action: suggests parent pillar/domain based on content.<br/>Output: front-matter patch."]
+    AG_EdgeSuggest["**Agent: Edge Suggest**<br/>Input: spec text + graph.<br/>Action: proposes `links`/`depends_on` to near-duplicates or neighbors.<br/>Signal: semantic similarity."]
+    AG_ImplFinder["**Agent: Implementation Finder**<br/>Input: spec API and repo symbols.<br/>Action: proposes `implements` with CODE URIs.<br/>Output: PR editing spec."]
+    AG_TestHook["**Agent: Test Hook**<br/>Input: test names, tags, CI logs.<br/>Action: proposes `verified_by` from test discovery.<br/>Output: PR patch."]
+    AG_Backlinker["**Agent: Backlink Writer**<br/>Input: accepted links.<br/>Action: writes "Referenced by" sections non-destructively."]
+    AG_Indexer["**Agent: Index Builder**<br/>Input: merged docs.<br/>Action: emits `graph.json`, `search.json`, `backlinks.json` for nav."]
+  end
+
+  %% ===== AGENT TOUCHPOINT EDGES (dashed) =====
+  %% Creation & placement
+  SPEC_Graph -.->|suggest parent| AG_AutoParent
+  NOTE_SSO -.->|suggest parent| AG_AutoParent
+  AG_AutoParent -.->|PR: add parent| SPEC_Graph
+  AG_AutoParent -.->|PR: add parent| NOTE_SSO
+
+  %% Linking and neighbors
+  SPEC_OAuth -.->|find neighbors| AG_EdgeSuggest
+  SPEC_Session -.->|find neighbors| AG_EdgeSuggest
+  AG_EdgeSuggest -.->|PR: add links/depends_on| SPEC_OAuth
+  AG_EdgeSuggest -.->|PR: add links/depends_on| SPEC_Session
+
+  %% Code and tests
+  SPEC_OAuth -.->|locate code| AG_ImplFinder
+  AG_ImplFinder -.->|PR: add implements CODE URIs| SPEC_OAuth
+  SPEC_OAuth -.->|discover tests| AG_TestHook
+  SPEC_Graph -.->|discover tests| AG_TestHook
+  AG_TestHook -.->|PR: add verified_by| SPEC_OAuth
+  AG_TestHook -.->|PR: add verified_by| SPEC_Graph
+
+  %% Backlinks and indices after merge
+  SPEC_OAuth -.->|on merge| AG_Backlinker
+  SPEC_Session -.->|on merge| AG_Backlinker
+  AG_Backlinker -.->|write footers| SPEC_OAuth
+  AG_Backlinker -.->|write footers| SPEC_Session
+  SPEC_Graph -.->|on merge| AG_Indexer
+  SPEC_OAuth -.->|on merge| AG_Indexer
+  AG_Indexer -.->|graph/search/backlinks| DOM_Docs
+        </div>
+
+        <div class="stats">
+            <h3>📋 Test Instructions:</h3>
+            <ol>
+                <li>Open this file in a web browser (requires internet for Mermaid CDN)</li>
+                <li>Wait for the diagram to render (may take 2-5 seconds for complex graphs)</li>
+                <li>Check for:
+                    <ul>
+                        <li>✅ All subgraphs are visible and properly labeled</li>
+                        <li>✅ Node text is readable (not cut off or overlapping)</li>
+                        <li>✅ Arrows connect to the correct nodes</li>
+                        <li>✅ Dashed vs solid edges are distinguishable</li>
+                        <li>✅ Edge labels are readable</li>
+                        <li>⚠️ Layout is logical (left-to-right hierarchy)</li>
+                        <li>⚠️ No excessive whitespace or cramped areas</li>
+                    </ul>
+                </li>
+                <li>Try zooming in/out using Ctrl+/Ctrl- (or Cmd+/Cmd-)</li>
+                <li>Check if horizontal scrolling works if the diagram is wide</li>
+            </ol>
+
+            <h3>🔍 Expected Behavior:</h3>
+            <p>Mermaid v11 should handle this graph well, but you may observe:</p>
+            <ul>
+                <li><strong>Large Width:</strong> The LR orientation with 7 subgraphs will likely be very wide</li>
+                <li><strong>Edge Crossings:</strong> With 40+ edges, some visual crossing is inevitable</li>
+                <li><strong>Text Wrapping:</strong> Long node labels may wrap or truncate depending on node size</li>
+                <li><strong>Performance:</strong> Initial render may take 2-5 seconds</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Measure render time
+        const startTime = performance.now();
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const endTime = performance.now();
+                const renderTime = (endTime - startTime).toFixed(2);
+                console.log(`✅ Diagram rendered in ${renderTime}ms`);
+
+                // Check if diagram rendered successfully
+                const svgElement = document.querySelector('.mermaid svg');
+                if (svgElement) {
+                    const width = svgElement.getAttribute('width') || svgElement.getBBox().width;
+                    const height = svgElement.getAttribute('height') || svgElement.getBBox().height;
+                    console.log(`📐 Diagram dimensions: ${width}x${height}`);
+                } else {
+                    console.error('❌ Diagram failed to render');
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

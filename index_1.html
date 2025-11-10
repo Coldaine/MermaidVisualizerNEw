@@ -131,6 +131,255 @@
             background: #f8f9fa;
         }
 
+        /* Settings Panel Styles */
+        .settings-panel {
+            position: fixed;
+            right: -380px;
+            top: 0;
+            width: 380px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-header {
+            padding: 16px 20px;
+            background: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .close-settings:hover {
+            background: #e9ecef;
+        }
+
+        .settings-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 24px;
+        }
+
+        .setting-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setting-item {
+            margin-bottom: 16px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+
+        .setting-select,
+        .setting-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            color: #495057;
+            transition: border-color 0.2s ease;
+        }
+
+        .setting-select:focus,
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .direction-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .direction-btn {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .direction-btn:hover {
+            border-color: var(--primary-color);
+            background: #f8f9fa;
+        }
+
+        .direction-btn.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .direction-icon {
+            font-size: 20px;
+        }
+
+        .btn-settings {
+            background: #e9ecef;
+            border: 1px solid var(--border-color);
+            color: #495057;
+        }
+
+        .btn-settings:hover:not(:disabled) {
+            background: #dee2e6;
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .zoom-level {
+            font-size: 11px;
+            text-align: center;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        /* Dimension Warning */
+        .dimension-warning {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 10px 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+
+        .dimension-warning.show {
+            display: flex;
+        }
+
+        .dimension-warning .close-warning {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #856404;
+            padding: 0;
+            margin-left: 8px;
+        }
+
+        /* Pan Mode */
+        .preview-pane.pan-mode {
+            cursor: grab;
+        }
+
+        .preview-pane.pan-mode.panning {
+            cursor: grabbing;
+        }
+
+        .preview-pane.zoom-enabled {
+            overflow: hidden;
+        }
+
+        .preview-content.zoom-enabled {
+            transform-origin: center center;
+            transition: transform 0.2s ease;
+        }
+
         .main-content {
             flex: 1;
             display: flex;
@@ -314,6 +563,9 @@
                     <div class="dropdown-item" data-example="quadrant">⚡ Quadrant Chart</div>
                 </div>
             </div>
+            <button id="settingsBtn" class="btn btn-settings">
+                ⚙️ Layout Settings
+            </button>
         </div>
         
         <div class="main-content">
@@ -329,6 +581,22 @@ graph TD
             </div>
             
             <div class="preview-pane">
+                <!-- Dimension Warning -->
+                <div id="dimensionWarning" class="dimension-warning">
+                    <span>⚠️</span>
+                    <span id="dimensionWarningText">Diagram exceeds viewport</span>
+                    <button class="close-warning" onclick="document.getElementById('dimensionWarning').classList.remove('show')">×</button>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div id="zoomControls" class="zoom-controls" style="display: none;">
+                    <button id="zoomInBtn" class="zoom-btn" title="Zoom In (Ctrl++)">+</button>
+                    <div class="zoom-level" id="zoomLevel">100%</div>
+                    <button id="zoomOutBtn" class="zoom-btn" title="Zoom Out (Ctrl+-)">−</button>
+                    <button id="zoomResetBtn" class="zoom-btn" title="Reset Zoom (Ctrl+0)" style="font-size: 16px;">⟲</button>
+                    <button id="panToggleBtn" class="zoom-btn" title="Toggle Pan Mode" style="font-size: 14px;">✋</button>
+                </div>
+
                 <div id="previewContent" class="preview-content">
                     <div class="preview-placeholder">
                         Click 'Render Diagram' to preview your diagram
@@ -343,9 +611,231 @@ graph TD
         </div>
     </div>
 
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel">
+        <div class="settings-header">
+            <h2>⚙️ Layout Settings</h2>
+            <button id="closeSettings" class="close-settings">×</button>
+        </div>
+        <div class="settings-content">
+            <!-- Direction Control -->
+            <div class="setting-group">
+                <div class="setting-group-title">📐 Diagram Direction</div>
+                <div class="setting-description" style="margin-bottom: 12px;">
+                    Change the flow direction of your flowchart. This modifies the diagram code automatically.
+                </div>
+                <div class="direction-grid">
+                    <button class="direction-btn" data-direction="TB">
+                        <span class="direction-icon">⬇️</span>
+                        <span>Top to Bottom</span>
+                    </button>
+                    <button class="direction-btn" data-direction="LR">
+                        <span class="direction-icon">➡️</span>
+                        <span>Left to Right</span>
+                    </button>
+                    <button class="direction-btn" data-direction="BT">
+                        <span class="direction-icon">⬆️</span>
+                        <span>Bottom to Top</span>
+                    </button>
+                    <button class="direction-btn" data-direction="RL">
+                        <span class="direction-icon">⬅️</span>
+                        <span>Right to Left</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Theme Control -->
+            <div class="setting-group">
+                <div class="setting-group-title">🎨 Theme</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="themeSelect">Color Theme</label>
+                    <select id="themeSelect" class="setting-select">
+                        <option value="default">Default</option>
+                        <option value="dark">Dark</option>
+                        <option value="forest">Forest</option>
+                        <option value="neutral">Neutral</option>
+                        <option value="base">Base</option>
+                    </select>
+                    <div class="setting-description">Changes the color scheme of the rendered diagram</div>
+                </div>
+            </div>
+
+            <!-- Curve Control -->
+            <div class="setting-group">
+                <div class="setting-group-title">↪️ Edge Style</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="curveSelect">Edge Curve Type</label>
+                    <select id="curveSelect" class="setting-select">
+                        <option value="basis">Basis (Smooth)</option>
+                        <option value="linear">Linear (Straight)</option>
+                        <option value="cardinal">Cardinal (Alt Smooth)</option>
+                    </select>
+                    <div class="setting-description">Controls how connecting lines are drawn</div>
+                </div>
+            </div>
+
+            <!-- Spacing Controls -->
+            <div class="setting-group">
+                <div class="setting-group-title">↔️ Spacing</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="nodeSpacing">Node Spacing: <span id="nodeSpacingValue">50</span>px</label>
+                    <input type="range" id="nodeSpacing" class="setting-input" min="20" max="150" value="50" style="padding: 0;">
+                    <div class="setting-description">Horizontal space between nodes</div>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label" for="rankSpacing">Rank Spacing: <span id="rankSpacingValue">50</span>px</label>
+                    <input type="range" id="rankSpacing" class="setting-input" min="20" max="150" value="50" style="padding: 0;">
+                    <div class="setting-description">Vertical space between ranks/levels</div>
+                </div>
+            </div>
+
+            <!-- Layout Engine Control -->
+            <div class="setting-group">
+                <div class="setting-group-title">🔧 Layout Engine</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="layoutEngine">Graph Layout Algorithm</label>
+                    <select id="layoutEngine" class="setting-select">
+                        <option value="dagre">Dagre (Default)</option>
+                        <option value="elk">ELK (Experimental)</option>
+                    </select>
+                    <div class="setting-description">ELK may provide better layouts for complex graphs. Requires additional library.</div>
+                </div>
+            </div>
+
+            <!-- Preset Management -->
+            <div class="setting-group">
+                <div class="setting-group-title">💾 Presets</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="presetSelect">Load Preset</label>
+                    <select id="presetSelect" class="setting-select">
+                        <option value="">-- Select Preset --</option>
+                        <option value="default">Default Settings</option>
+                        <option value="compact">Compact Layout</option>
+                        <option value="spacious">Spacious Layout</option>
+                        <option value="technical">Technical (Straight Lines)</option>
+                        <option value="presentation">Presentation Mode</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button id="savePresetBtn" class="btn btn-secondary" style="flex: 1; padding: 8px;">
+                        💾 Save Current
+                    </button>
+                    <button id="deletePresetBtn" class="btn btn-secondary" style="flex: 1; padding: 8px;">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Generation -->
+            <div class="setting-group">
+                <div class="setting-group-title">🤖 AI Diagram Generation</div>
+                <div class="setting-item">
+                    <label class="setting-label" for="aiPrompt">Describe your diagram</label>
+                    <textarea id="aiPrompt" class="setting-input" rows="4" placeholder="Example: Create a flowchart showing user login process with authentication and error handling"></textarea>
+                    <div class="setting-description">Use natural language to describe what you want to visualize</div>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label" for="aiDiagramType">Diagram Type</label>
+                    <select id="aiDiagramType" class="setting-select">
+                        <option value="flowchart">Flowchart</option>
+                        <option value="sequence">Sequence Diagram</option>
+                        <option value="class">Class Diagram</option>
+                        <option value="state">State Diagram</option>
+                        <option value="er">ER Diagram</option>
+                        <option value="gantt">Gantt Chart</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="useThinking" checked style="width: auto;">
+                        <span class="setting-label" style="margin: 0;">Enable AI Reasoning (Thinking Mode)</span>
+                    </label>
+                    <div class="setting-description">Shows AI's thought process during generation</div>
+                </div>
+                <button id="generateAiBtn" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+                    ✨ Generate Diagram
+                </button>
+                <div id="aiStatus" style="margin-top: 12px; padding: 10px; border-radius: 4px; display: none; font-size: 13px;"></div>
+                <div id="aiReasoning" style="margin-top: 12px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none; font-size: 12px; max-height: 200px; overflow-y: auto;">
+                    <div style="font-weight: 600; margin-bottom: 6px;">💭 AI Reasoning:</div>
+                    <div id="aiReasoningContent" style="white-space: pre-wrap; color: #495057;"></div>
+                </div>
+            </div>
+
+            <!-- Apply Button -->
+            <button id="applySettings" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                ✅ Apply & Re-render
+            </button>
+        </div>
+    </div>
+
     <script type="module">
         let mermaid = null;
         let currentSvg = null;
+
+        // AI Backend Configuration
+        const AI_BACKEND = 'http://localhost:3001';
+
+        // Settings state
+        let settings = {
+            theme: 'default',
+            curve: 'basis',
+            nodeSpacing: 50,
+            rankSpacing: 50,
+            layoutEngine: 'dagre'
+        };
+
+        // Zoom/Pan state
+        let zoomState = {
+            scale: 1,
+            translateX: 0,
+            translateY: 0,
+            minScale: 0.1,
+            maxScale: 5,
+            panEnabled: false,
+            isDragging: false,
+            lastX: 0,
+            lastY: 0
+        };
+
+        // Preset definitions
+        const builtInPresets = {
+            default: {
+                theme: 'default',
+                curve: 'basis',
+                nodeSpacing: 50,
+                rankSpacing: 50,
+                layoutEngine: 'dagre'
+            },
+            compact: {
+                theme: 'default',
+                curve: 'linear',
+                nodeSpacing: 30,
+                rankSpacing: 40,
+                layoutEngine: 'dagre'
+            },
+            spacious: {
+                theme: 'default',
+                curve: 'basis',
+                nodeSpacing: 80,
+                rankSpacing: 90,
+                layoutEngine: 'dagre'
+            },
+            technical: {
+                theme: 'base',
+                curve: 'linear',
+                nodeSpacing: 60,
+                rankSpacing: 60,
+                layoutEngine: 'dagre'
+            },
+            presentation: {
+                theme: 'forest',
+                curve: 'basis',
+                nodeSpacing: 70,
+                rankSpacing: 80,
+                layoutEngine: 'dagre'
+            }
+        };
         
         const examples = {
             flowchart: `graph LR
@@ -509,6 +999,7 @@ Blog,Exit,1500`,
         // DOM elements
         const editorTextarea = document.getElementById('editorTextarea');
         const previewContent = document.getElementById('previewContent');
+        const previewPane = document.querySelector('.preview-pane');
         const statusMessage = document.getElementById('statusMessage');
         const renderBtn = document.getElementById('renderBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -516,12 +1007,43 @@ Blog,Exit,1500`,
         const exportPngBtn = document.getElementById('exportPngBtn');
         const examplesBtn = document.getElementById('examplesBtn');
         const examplesMenu = document.getElementById('examplesMenu');
-        
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const closeSettings = document.getElementById('closeSettings');
+        const themeSelect = document.getElementById('themeSelect');
+        const curveSelect = document.getElementById('curveSelect');
+        const nodeSpacing = document.getElementById('nodeSpacing');
+        const rankSpacing = document.getElementById('rankSpacing');
+        const nodeSpacingValue = document.getElementById('nodeSpacingValue');
+        const rankSpacingValue = document.getElementById('rankSpacingValue');
+        const layoutEngine = document.getElementById('layoutEngine');
+        const presetSelect = document.getElementById('presetSelect');
+        const savePresetBtn = document.getElementById('savePresetBtn');
+        const deletePresetBtn = document.getElementById('deletePresetBtn');
+        const applySettings = document.getElementById('applySettings');
+        const directionBtns = document.querySelectorAll('.direction-btn');
+        const zoomControls = document.getElementById('zoomControls');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const zoomResetBtn = document.getElementById('zoomResetBtn');
+        const panToggleBtn = document.getElementById('panToggleBtn');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const dimensionWarning = document.getElementById('dimensionWarning');
+        const dimensionWarningText = document.getElementById('dimensionWarningText');
+        const aiPrompt = document.getElementById('aiPrompt');
+        const aiDiagramType = document.getElementById('aiDiagramType');
+        const useThinking = document.getElementById('useThinking');
+        const generateAiBtn = document.getElementById('generateAiBtn');
+        const aiStatus = document.getElementById('aiStatus');
+        const aiReasoning = document.getElementById('aiReasoning');
+        const aiReasoningContent = document.getElementById('aiReasoningContent');
+
         // Initialize app
         function init() {
             editorTextarea.value = defaultDiagram;
             setupEventListeners();
             loadMermaid();
+            updateDirectionButtons(); // Set initial direction button state
         }
         
         // Load Mermaid library
@@ -530,12 +1052,32 @@ Blog,Exit,1500`,
                 if (!mermaid) {
                     const module = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
                     mermaid = module.default;
-                    mermaid.initialize({ 
-                        startOnLoad: false, 
-                        theme: 'default',
-                        securityLevel: 'loose'
-                    });
                 }
+
+                // Build configuration object
+                const config = {
+                    startOnLoad: false,
+                    theme: settings.theme,
+                    securityLevel: 'loose',
+                    flowchart: {
+                        curve: settings.curve,
+                        nodeSpacing: settings.nodeSpacing,
+                        rankSpacing: settings.rankSpacing,
+                        htmlLabels: true
+                    }
+                };
+
+                // Add ELK layout engine if selected (experimental)
+                if (settings.layoutEngine === 'elk') {
+                    config.elk = {
+                        mergeEdges: true,
+                        nodePlacementStrategy: 'BRANDES_KOEPF'
+                    };
+                    // Note: ELK engine requires the elk.js library to be loaded separately
+                    // This is a placeholder for future ELK integration
+                }
+
+                mermaid.initialize(config);
             } catch (error) {
                 showStatus('Failed to load Mermaid library', 'error');
                 console.error('Error loading Mermaid:', error);
@@ -589,6 +1131,156 @@ Blog,Exit,1500`,
                     renderDiagram();
                 }
             });
+
+            // Settings panel
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.classList.add('open');
+            });
+
+            closeSettings.addEventListener('click', () => {
+                settingsPanel.classList.remove('open');
+            });
+
+            // Close settings when clicking outside
+            document.addEventListener('click', (e) => {
+                if (settingsPanel.classList.contains('open') &&
+                    !settingsPanel.contains(e.target) &&
+                    !settingsBtn.contains(e.target)) {
+                    settingsPanel.classList.remove('open');
+                }
+            });
+
+            // Direction buttons
+            directionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const direction = btn.dataset.direction;
+                    changeDirection(direction);
+
+                    // Update active state
+                    directionBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // Theme select
+            themeSelect.addEventListener('change', () => {
+                settings.theme = themeSelect.value;
+            });
+
+            // Curve select
+            curveSelect.addEventListener('change', () => {
+                settings.curve = curveSelect.value;
+            });
+
+            // Spacing sliders
+            nodeSpacing.addEventListener('input', () => {
+                settings.nodeSpacing = parseInt(nodeSpacing.value);
+                nodeSpacingValue.textContent = nodeSpacing.value;
+            });
+
+            rankSpacing.addEventListener('input', () => {
+                settings.rankSpacing = parseInt(rankSpacing.value);
+                rankSpacingValue.textContent = rankSpacing.value;
+            });
+
+            // Layout engine select
+            layoutEngine.addEventListener('change', () => {
+                settings.layoutEngine = layoutEngine.value;
+                if (layoutEngine.value === 'elk') {
+                    showStatus('ELK engine requires additional setup', 'error');
+                }
+            });
+
+            // Preset management
+            presetSelect.addEventListener('change', () => {
+                const presetName = presetSelect.value;
+                if (presetName) {
+                    loadPreset(presetName);
+                }
+            });
+
+            savePresetBtn.addEventListener('click', () => {
+                saveCurrentPreset();
+            });
+
+            deletePresetBtn.addEventListener('click', () => {
+                deletePreset();
+            });
+
+            // Apply settings button
+            applySettings.addEventListener('click', async () => {
+                await loadMermaid(); // Reinitialize with new settings
+                await renderDiagram(); // Re-render
+                settingsPanel.classList.remove('open');
+                showStatus('Settings applied successfully', 'success');
+            });
+
+            // Zoom controls
+            zoomInBtn.addEventListener('click', () => zoomIn());
+            zoomOutBtn.addEventListener('click', () => zoomOut());
+            zoomResetBtn.addEventListener('click', () => zoomReset());
+            panToggleBtn.addEventListener('click', () => togglePanMode());
+
+            // Pan/drag functionality
+            previewPane.addEventListener('mousedown', handlePanStart);
+            previewPane.addEventListener('mousemove', handlePanMove);
+            previewPane.addEventListener('mouseup', handlePanEnd);
+            previewPane.addEventListener('mouseleave', handlePanEnd);
+
+            // Mouse wheel zoom
+            previewPane.addEventListener('wheel', handleWheelZoom, { passive: false });
+
+            // Keyboard shortcuts for zoom
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === '=' || e.key === '+') {
+                        e.preventDefault();
+                        zoomIn();
+                    } else if (e.key === '-' || e.key === '_') {
+                        e.preventDefault();
+                        zoomOut();
+                    } else if (e.key === '0') {
+                        e.preventDefault();
+                        zoomReset();
+                    }
+                }
+            });
+
+            // Load custom presets from localStorage
+            loadCustomPresets();
+
+            // AI Generation
+            generateAiBtn.addEventListener('click', () => generateDiagram());
+        }
+
+        // Change diagram direction
+        function changeDirection(newDirection) {
+            const code = editorTextarea.value;
+
+            // Pattern to match flowchart/graph direction
+            const patterns = [
+                /^(\s*)(graph|flowchart)\s+(TB|TD|BT|LR|RL)(\s)/m,
+                /^(\s*)(graph|flowchart)(\s+)/m
+            ];
+
+            let updated = false;
+
+            // Try to replace existing direction
+            if (patterns[0].test(code)) {
+                editorTextarea.value = code.replace(patterns[0], `$1$2 ${newDirection}$4`);
+                updated = true;
+            }
+            // Try to add direction to graph/flowchart without direction
+            else if (patterns[1].test(code)) {
+                editorTextarea.value = code.replace(patterns[1], `$1$2 ${newDirection}$3`);
+                updated = true;
+            }
+
+            if (updated) {
+                showStatus(`Direction changed to ${newDirection}`, 'success');
+            } else {
+                showStatus('Could not detect flowchart in code', 'error');
+            }
         }
         
         // Render diagram
@@ -598,32 +1290,396 @@ Blog,Exit,1500`,
                 showStatus('Editor is empty', 'error');
                 return;
             }
-            
+
             if (!mermaid) {
                 await loadMermaid();
                 if (!mermaid) return;
             }
-            
+
+            // Reinitialize Mermaid with current settings before render
+            await loadMermaid();
+
             showLoading();
-            
+
             try {
                 const id = 'mermaid-' + Date.now();
                 const { svg } = await mermaid.render(id, code);
-                
+
                 previewContent.innerHTML = svg;
                 currentSvg = previewContent.querySelector('svg');
-                
+
                 if (currentSvg) {
                     currentSvg.classList.add('rendered-svg');
                     enableExportButtons();
                     showStatus('Diagram rendered successfully', 'success');
+                    updateDirectionButtons(); // Update direction button states
+
+                    // Show zoom controls and check dimensions
+                    zoomControls.style.display = 'flex';
+                    setTimeout(() => checkDimensions(), 100); // Small delay for layout completion
                 } else {
                     throw new Error('No SVG generated');
                 }
-                
+
             } catch (error) {
                 showError(error.message || 'Failed to render diagram');
                 showStatus('Render failed', 'error');
+            }
+        }
+
+        // Detect and highlight current direction
+        function updateDirectionButtons() {
+            const code = editorTextarea.value;
+            const match = code.match(/^(\s*)(graph|flowchart)\s+(TB|TD|BT|LR|RL)(\s)/m);
+
+            directionBtns.forEach(btn => btn.classList.remove('active'));
+
+            if (match) {
+                const direction = match[3];
+                const activeBtn = Array.from(directionBtns).find(btn => btn.dataset.direction === direction);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+            }
+        }
+
+        // ===== ZOOM & PAN FUNCTIONS =====
+
+        function zoomIn() {
+            if (zoomState.scale < zoomState.maxScale) {
+                zoomState.scale = Math.min(zoomState.scale * 1.2, zoomState.maxScale);
+                applyZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (zoomState.scale > zoomState.minScale) {
+                zoomState.scale = Math.max(zoomState.scale / 1.2, zoomState.minScale);
+                applyZoom();
+            }
+        }
+
+        function zoomReset() {
+            zoomState.scale = 1;
+            zoomState.translateX = 0;
+            zoomState.translateY = 0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            if (currentSvg) {
+                const transform = `translate(${zoomState.translateX}px, ${zoomState.translateY}px) scale(${zoomState.scale})`;
+                previewContent.style.transform = transform;
+                zoomLevel.textContent = Math.round(zoomState.scale * 100) + '%';
+            }
+        }
+
+        function handleWheelZoom(e) {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoomState.scale = Math.max(zoomState.minScale, Math.min(zoomState.maxScale, zoomState.scale + delta));
+                applyZoom();
+            }
+        }
+
+        function togglePanMode() {
+            zoomState.panEnabled = !zoomState.panEnabled;
+            if (zoomState.panEnabled) {
+                previewPane.classList.add('pan-mode');
+                panToggleBtn.style.background = 'var(--primary-color)';
+                panToggleBtn.style.color = 'white';
+                showStatus('Pan mode enabled - Click and drag to move', 'success');
+            } else {
+                previewPane.classList.remove('pan-mode', 'panning');
+                panToggleBtn.style.background = '';
+                panToggleBtn.style.color = '';
+                showStatus('Pan mode disabled', 'success');
+            }
+        }
+
+        function handlePanStart(e) {
+            if (zoomState.panEnabled && currentSvg && e.button === 0) {
+                zoomState.isDragging = true;
+                zoomState.lastX = e.clientX;
+                zoomState.lastY = e.clientY;
+                previewPane.classList.add('panning');
+                previewContent.style.transition = 'none';
+            }
+        }
+
+        function handlePanMove(e) {
+            if (zoomState.isDragging) {
+                const deltaX = e.clientX - zoomState.lastX;
+                const deltaY = e.clientY - zoomState.lastY;
+                zoomState.translateX += deltaX;
+                zoomState.translateY += deltaY;
+                zoomState.lastX = e.clientX;
+                zoomState.lastY = e.clientY;
+                applyZoom();
+            }
+        }
+
+        function handlePanEnd() {
+            if (zoomState.isDragging) {
+                zoomState.isDragging = false;
+                previewPane.classList.remove('panning');
+                previewContent.style.transition = '';
+            }
+        }
+
+        // ===== PRESET MANAGEMENT =====
+
+        function loadPreset(presetName) {
+            let preset;
+
+            // Check built-in presets first
+            if (builtInPresets[presetName]) {
+                preset = builtInPresets[presetName];
+            } else {
+                // Check custom presets in localStorage
+                const customPresets = JSON.parse(localStorage.getItem('mermaidPresets') || '{}');
+                preset = customPresets[presetName];
+            }
+
+            if (preset) {
+                settings = { ...preset };
+                updateSettingsUI();
+                showStatus(`Preset "${presetName}" loaded`, 'success');
+            }
+        }
+
+        function saveCurrentPreset() {
+            const presetName = prompt('Enter a name for this preset:');
+            if (presetName && presetName.trim()) {
+                const customPresets = JSON.parse(localStorage.getItem('mermaidPresets') || '{}');
+                customPresets[presetName] = { ...settings };
+                localStorage.setItem('mermaidPresets', JSON.stringify(customPresets));
+
+                // Add to dropdown
+                const option = document.createElement('option');
+                option.value = presetName;
+                option.textContent = `${presetName} (Custom)`;
+                presetSelect.appendChild(option);
+
+                showStatus(`Preset "${presetName}" saved`, 'success');
+            }
+        }
+
+        function deletePreset() {
+            const presetName = presetSelect.value;
+            if (!presetName) {
+                showStatus('Select a preset to delete', 'error');
+                return;
+            }
+
+            // Prevent deleting built-in presets
+            if (builtInPresets[presetName]) {
+                showStatus('Cannot delete built-in presets', 'error');
+                return;
+            }
+
+            if (confirm(`Delete preset "${presetName}"?`)) {
+                const customPresets = JSON.parse(localStorage.getItem('mermaidPresets') || '{}');
+                delete customPresets[presetName];
+                localStorage.setItem('mermaidPresets', JSON.stringify(customPresets));
+
+                // Remove from dropdown
+                const option = Array.from(presetSelect.options).find(opt => opt.value === presetName);
+                if (option) option.remove();
+
+                presetSelect.value = '';
+                showStatus(`Preset "${presetName}" deleted`, 'success');
+            }
+        }
+
+        function loadCustomPresets() {
+            const customPresets = JSON.parse(localStorage.getItem('mermaidPresets') || '{}');
+            Object.keys(customPresets).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = `${name} (Custom)`;
+                presetSelect.appendChild(option);
+            });
+        }
+
+        function updateSettingsUI() {
+            themeSelect.value = settings.theme;
+            curveSelect.value = settings.curve;
+            nodeSpacing.value = settings.nodeSpacing;
+            rankSpacing.value = settings.rankSpacing;
+            layoutEngine.value = settings.layoutEngine;
+            nodeSpacingValue.textContent = settings.nodeSpacing;
+            rankSpacingValue.textContent = settings.rankSpacing;
+        }
+
+        // ===== AI DIAGRAM GENERATION =====
+
+        async function generateDiagram() {
+            const prompt = aiPrompt.value.trim();
+            if (!prompt) {
+                showAiStatus('Please enter a description for your diagram', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            generateAiBtn.disabled = true;
+            generateAiBtn.textContent = '⏳ Generating...';
+            showAiStatus('Connecting to AI backend...', 'loading');
+            aiReasoning.style.display = 'none';
+
+            try {
+                // Check if backend is running
+                const healthCheck = await fetch(`${AI_BACKEND}/health`, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(3000)
+                });
+
+                if (!healthCheck.ok) {
+                    throw new Error('Backend is not responding. Make sure the backend server is running on port 3001.');
+                }
+
+                const healthData = await healthCheck.json();
+                if (!healthData.zai_api_key_configured) {
+                    throw new Error('Z.ai API key is not configured in backend. Check your .env file.');
+                }
+
+                // Generate diagram
+                showAiStatus('Generating diagram with AI...', 'loading');
+                const response = await fetch(`${AI_BACKEND}/api/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        diagramType: aiDiagramType.value,
+                        useThinking: useThinking.checked
+                    }),
+                    signal: AbortSignal.timeout(45000) // 45 second timeout
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Insert generated code into editor
+                    editorTextarea.value = data.code;
+                    showAiStatus('✓ Diagram generated successfully! Rendering...', 'success');
+
+                    // Show reasoning if available
+                    if (data.reasoning) {
+                        aiReasoningContent.textContent = data.reasoning;
+                        aiReasoning.style.display = 'block';
+                    }
+
+                    // Show usage stats
+                    if (data.usage) {
+                        console.log('AI Usage:', data.usage);
+                        console.log(`Tokens: ${data.usage.total_tokens} (prompt: ${data.usage.prompt_tokens}, completion: ${data.usage.completion_tokens})`);
+                    }
+
+                    // Automatically render the diagram
+                    await renderDiagram();
+
+                    // Close settings panel after successful generation
+                    setTimeout(() => {
+                        settingsPanel.classList.remove('open');
+                    }, 1500);
+
+                } else {
+                    throw new Error(data.error || 'Generation failed');
+                }
+
+            } catch (error) {
+                console.error('AI Generation Error:', error);
+
+                let errorMessage = error.message;
+
+                // Provide helpful error messages
+                if (error.name === 'TimeoutError' || errorMessage.includes('timeout')) {
+                    errorMessage = 'Request timed out. The AI backend may be slow or unresponsive. Try again.';
+                } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+                    errorMessage = 'Cannot connect to backend. Make sure the backend server is running:\n\ncd backend\nnpm start (or python server.py)';
+                } else if (errorMessage.includes('401')) {
+                    errorMessage = 'Invalid Z.ai API key. Check your backend/.env configuration.';
+                } else if (errorMessage.includes('429')) {
+                    errorMessage = 'Rate limit exceeded. Please wait a moment and try again.';
+                } else if (errorMessage.includes('500')) {
+                    errorMessage = 'Backend server error. Check backend logs for details.';
+                }
+
+                showAiStatus(`❌ ${errorMessage}`, 'error');
+            } finally {
+                // Re-enable button
+                generateAiBtn.disabled = false;
+                generateAiBtn.textContent = '✨ Generate Diagram';
+            }
+        }
+
+        function showAiStatus(message, type = '') {
+            aiStatus.style.display = 'block';
+            aiStatus.textContent = message;
+
+            // Style based on type
+            if (type === 'error') {
+                aiStatus.style.background = '#f8d7da';
+                aiStatus.style.color = '#721c24';
+                aiStatus.style.border = '1px solid #f5c6cb';
+            } else if (type === 'success') {
+                aiStatus.style.background = '#d4edda';
+                aiStatus.style.color = '#155724';
+                aiStatus.style.border = '1px solid #c3e6cb';
+            } else if (type === 'loading') {
+                aiStatus.style.background = '#d1ecf1';
+                aiStatus.style.color = '#0c5460';
+                aiStatus.style.border = '1px solid #bee5eb';
+            } else {
+                aiStatus.style.background = '#f8f9fa';
+                aiStatus.style.color = '#495057';
+                aiStatus.style.border = '1px solid #dee2e6';
+            }
+
+            // Auto-hide success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    aiStatus.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // ===== DIMENSION DETECTION =====
+
+        function checkDimensions() {
+            if (!currentSvg) return;
+
+            const svgRect = currentSvg.getBoundingClientRect();
+            const paneRect = previewPane.getBoundingClientRect();
+
+            const svgWidth = svgRect.width;
+            const svgHeight = svgRect.height;
+            const paneWidth = paneRect.width;
+            const paneHeight = paneRect.height;
+
+            const widthRatio = svgWidth / paneWidth;
+            const heightRatio = svgHeight / paneHeight;
+
+            if (widthRatio > 1.2 || heightRatio > 1.2) {
+                // Diagram exceeds viewport
+                const message = `Diagram: ${Math.round(svgWidth)}×${Math.round(svgHeight)}px | Viewport: ${Math.round(paneWidth)}×${Math.round(paneHeight)}px`;
+                dimensionWarningText.textContent = `⚠️ Large diagram detected. ${message}. Use zoom controls to navigate.`;
+                dimensionWarning.classList.add('show');
+
+                // Auto-show zoom controls
+                zoomControls.style.display = 'flex';
+                previewPane.classList.add('zoom-enabled');
+                previewContent.classList.add('zoom-enabled');
+            } else {
+                dimensionWarning.classList.remove('show');
             }
         }
         
@@ -654,6 +1710,9 @@ Blog,Exit,1500`,
             previewContent.innerHTML = '<div class="preview-placeholder">Click \'Render Diagram\' to preview your diagram</div>';
             currentSvg = null;
             disableExportButtons();
+            zoomControls.style.display = 'none';
+            dimensionWarning.classList.remove('show');
+            zoomReset();
             showStatus('Editor cleared', 'success');
         }
         
@@ -662,6 +1721,7 @@ Blog,Exit,1500`,
             if (examples[type]) {
                 editorTextarea.value = examples[type];
                 showStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} example loaded`, 'success');
+                updateDirectionButtons(); // Update direction buttons when loading example
             }
         }
         

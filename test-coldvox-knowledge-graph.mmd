@@ -1,0 +1,100 @@
+flowchart LR
+  %% ORIENTATION
+  %% Left -> Right for hierarchy. Agents interact via dashed advisory edges.
+
+  %% ===== HIERARCHY =====
+  subgraph L0_Vision["L0 • Vision"]
+    VIS["**Vision: ColdVox Unified Knowledge Strategy**<br/>Purpose: a living, searchable graph of design → code → tests.<br/>Outcomes: clarity, fast onboarding, precise impact analysis."]
+  end
+
+  subgraph L1_Pillars["L1 • Pillars"]
+    PIL_Product["**Pillar: Product Experience & Growth**<br/>Focus: user workflows, coherence, discoverability.<br/>KPIs: task success rate, time-to-info."]
+    PIL_Platform["**Pillar: Platform & Reliability**<br/>Focus: developer velocity, CI stability, operability.<br/>KPIs: MTTR, build time, flaky-test rate."]
+  end
+
+  subgraph L2_Domains["L2 • Domains"]
+    DOM_Auth["**Domain: Authentication & Access Control**<br/>Scope: SSO, OAuth 2.1, OIDC, MFA, sessions."]
+    DOM_Docs["**Domain: Documentation Graph & Search**<br/>Scope: schema, indexing, search, navigation."]
+  end
+
+  subgraph L3_Specs["L3 • Specs"]
+    SPEC_OAuth["**Spec: OAuth 2.1 API**<br/>Interfaces: `/authorize`, `/token`.<br/>Decisions: PKCE required, confidential clients only.<br/>Risks: token leakage, CSRF."]
+    SPEC_Session["**Spec: Session Token Model**<br/>Format: JWT w/ rotation & audience claims.<br/>Constraints: 15m access, 24h refresh.<br/>Risks: clock skew, replay."]
+    SPEC_Graph["**Spec: Docs-as-Graph Lite Schema**<br/>Nodes: pillar, domain, spec, impl, test, note.<br/>Edges: parent, implements, verified_by, depends_on, links."]
+  end
+
+  subgraph Impl["Implementations"]
+    IMP_Auth["**Impl: auth-service module**<br/>Lang: Rust.<br/>Code: `CODE:repo://src/auth.rs#symbol=login_handler`"]
+    IMP_Indexer["**Impl: graph-indexer**<br/>Lang: TypeScript.<br/>Code: `CODE:repo://tools/indexer.ts#L10-L220`"]
+  end
+
+  subgraph Tests["Tests"]
+    TST_OAuth["**Test: OAuth Flow E2E**<br/>Covers: auth code, token exchange, refresh, revocation."]
+    TST_Graph["**Test: Graph Builder Unit Suite**<br/>Covers: node parse, edge resolve, backlink emit."]
+  end
+
+  subgraph Notes["Freeform Notes"]
+    NOTE_SSO["**Note: SSO findings and vendor evaluation**<br/>Decision: OIDC, priority Okta; fallback Auth0.<br/>Open: SCIM provisioning scope."]
+  end
+
+  %% ===== HIERARCHY EDGES (parent) =====
+  VIS -->|parent| PIL_Product
+  VIS -->|parent| PIL_Platform
+  PIL_Product -->|parent| DOM_Auth
+  PIL_Platform -->|parent| DOM_Docs
+  DOM_Auth -->|parent| SPEC_OAuth
+  DOM_Auth -->|parent| SPEC_Session
+  DOM_Docs -->|parent| SPEC_Graph
+
+  %% ===== GRAPH EDGES (semantic ties) =====
+  SPEC_OAuth -->|implements| IMP_Auth
+  SPEC_Graph -->|implements| IMP_Indexer
+  SPEC_OAuth -->|verified_by| TST_OAuth
+  SPEC_Graph -->|verified_by| TST_Graph
+  SPEC_Session ---|depends_on| SPEC_OAuth
+  NOTE_SSO ---|links| SPEC_OAuth
+  NOTE_SSO ---|links| SPEC_Session
+
+  %% ===== AGENTS =====
+  subgraph Agents["Agents (assist, propose, open PRs)"]
+    AG_AutoParent["**Agent: Auto-Parent**<br/>Input: new spec/note.<br/>Action: suggests parent pillar/domain based on content.<br/>Output: front-matter patch."]
+    AG_EdgeSuggest["**Agent: Edge Suggest**<br/>Input: spec text + graph.<br/>Action: proposes `links`/`depends_on` to near-duplicates or neighbors.<br/>Signal: semantic similarity."]
+    AG_ImplFinder["**Agent: Implementation Finder**<br/>Input: spec API and repo symbols.<br/>Action: proposes `implements` with CODE URIs.<br/>Output: PR editing spec."]
+    AG_TestHook["**Agent: Test Hook**<br/>Input: test names, tags, CI logs.<br/>Action: proposes `verified_by` from test discovery.<br/>Output: PR patch."]
+    AG_Backlinker["**Agent: Backlink Writer**<br/>Input: accepted links.<br/>Action: writes "Referenced by" sections non-destructively."]
+    AG_Indexer["**Agent: Index Builder**<br/>Input: merged docs.<br/>Action: emits `graph.json`, `search.json`, `backlinks.json` for nav."]
+  end
+
+  %% ===== AGENT TOUCHPOINT EDGES (dashed) =====
+  %% Creation & placement
+  SPEC_Graph -.->|suggest parent| AG_AutoParent
+  NOTE_SSO -.->|suggest parent| AG_AutoParent
+  AG_AutoParent -.->|PR: add parent| SPEC_Graph
+  AG_AutoParent -.->|PR: add parent| NOTE_SSO
+
+  %% Linking and neighbors
+  SPEC_OAuth -.->|find neighbors| AG_EdgeSuggest
+  SPEC_Session -.->|find neighbors| AG_EdgeSuggest
+  AG_EdgeSuggest -.->|PR: add links/depends_on| SPEC_OAuth
+  AG_EdgeSuggest -.->|PR: add links/depends_on| SPEC_Session
+
+  %% Code and tests
+  SPEC_OAuth -.->|locate code| AG_ImplFinder
+  AG_ImplFinder -.->|PR: add implements CODE URIs| SPEC_OAuth
+  SPEC_OAuth -.->|discover tests| AG_TestHook
+  SPEC_Graph -.->|discover tests| AG_TestHook
+  AG_TestHook -.->|PR: add verified_by| SPEC_OAuth
+  AG_TestHook -.->|PR: add verified_by| SPEC_Graph
+
+  %% Backlinks and indices after merge
+  SPEC_OAuth -.->|on merge| AG_Backlinker
+  SPEC_Session -.->|on merge| AG_Backlinker
+  AG_Backlinker -.->|write footers| SPEC_OAuth
+  AG_Backlinker -.->|write footers| SPEC_Session
+  SPEC_Graph -.->|on merge| AG_Indexer
+  SPEC_OAuth -.->|on merge| AG_Indexer
+  AG_Indexer -.->|graph/search/backlinks| DOM_Docs
+
+  %% ===== LEGEND (comment) =====
+  %% Solid arrows = authored relationships (parent, implements, verified_by, depends_on, links)
+  %% Dashed arrows = agent proposals and PRs
